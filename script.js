@@ -41,7 +41,7 @@ function drawMap(map, canvas, squareSize){
 	for (var i = 0; i < map.length; i++) {
 		var row = map[i];
 		for (var j = 0; j < map[i].length; j++) {
-			if(map[i][j] === 1){
+			if(map[i][j] === 0){
 				ctx.fillStyle="#000000";
 				ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
 			}else{
@@ -87,10 +87,40 @@ function gameOfLife(matrix){
 	return next_gen;
 }
 
-var matrix = randomizeMatrix(setMatrix(canvas, squareSize));
+var matrix = fillMatrix(setMatrix(canvas, squareSize), 0);
+var isPaused = false;
+canvas.addEventListener("mousemove", function(e){
+	if (e.which == 1) {
+		isPaused = true;
+		var i = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
+		var j = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
+		matrix[i][j] = 1;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = "#00FF00";
+		ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
+  }
+}, false);
 
-setInterval(function(){
-	drawMap(matrix, canvas, squareSize);
-	matrix = gameOfLife(matrix);
+canvas.addEventListener("mouseup", function(e){
+	isPaused = false;
+});
+
+canvas.addEventListener("mousedown", function(e){
+	isPaused = true;
+	var i = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
+	var j = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
+	matrix[i][j] = 1;
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle = "#00FF00";
+	ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
+});
+
+//var matrix = randomizeMatrix(setMatrix(canvas, squareSize));
+var interval = setInterval(function(){
+	if(!isPaused){
+		drawMap(matrix, canvas, squareSize);
+		matrix = gameOfLife(matrix);
+	}
 }, 150);
+
 
