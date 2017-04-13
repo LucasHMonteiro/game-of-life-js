@@ -36,6 +36,110 @@ function fillMatrix(matrix, value){
 	return matrix;
 }
 
+function octant(x,y){
+	if(y > x){
+		if(x >= 0 && y >= 0){
+			return 1;
+		}else if(x <= 0 && y >= 0){
+			return 2;
+		}else if(x <= 0 && y <= 0){
+			return 5;
+		}else if(x >= 0 && y <= 0){
+			return 6;
+		}
+	}else{
+		if(x >= 0 && y >= 0){
+			return 0;
+		}else if(x <= 0 && y >= 0){
+			return 3;
+		}else if(x >= 0 && y <= 0){
+			return 4;
+		}else if(x <= 0 && y <= 0){
+			return 7;
+		}
+	}
+}
+
+
+
+// function drawLine(x0, y0, x1, y1){
+
+
+
+// 	var dx = x1 - x0;
+// 	var dy = y1 - y0;
+// 	var d = 2*dy - dx;
+// 	var y = y0;
+// 	for(x = x0; x <= x1; x++){
+// 		var ctx = canvas.getContext('2d');
+// 		ctx.fillStyle = "#00FF00";
+// 		ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
+// 		if (d > 0) {
+// 			y++;
+// 			d = d - 2*dx;
+// 		}
+// 		d += 2*dy;
+// 	}
+// }
+
+function putPixel(x, y){
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle = "#00FF00";
+	ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
+}
+
+function drawLine(x0, y0, x1, y1) {
+	var dx = x1 - x0;
+	var dy = y1 - y0;
+
+	var inc_x = (dx >= 0) ? +1 : -1;
+	var inc_y = (dy >= 0) ? +1 : -1;
+
+	dx = (dx < 0) ? -dx : dx;
+	dy = (dy < 0) ? -dy : dy;
+
+	if (dx >= dy) {
+		var d = 2*dy - dx
+		var delta_A = 2*dy
+		var delta_B = 2*dy - 2*dx
+
+		var x = 0;
+		var y = 0;
+		for (i=0; i<=dx; i++) {
+			putPixel(x + x0, y + y0);
+			if (d > 0) {
+				d += delta_B;
+				x += inc_x;
+				y += inc_y;
+			}
+			else {
+				d += delta_A;
+				x += inc_x;
+			}
+		}
+	}
+	else {
+		var d = 2*dx - dy
+		var delta_A = 2*dx
+		var delta_B = 2*dx - 2*dy
+
+		var x = 0;
+		var y = 0;
+		for (i=0; i<=dy; i++) {
+			putPixel(x + x0, y + y0);
+			if (d > 0) {
+				d += delta_B;
+				x += inc_x;
+				y += inc_y;
+			}
+			else {
+				d += delta_A;
+				y += inc_y;
+			}
+		}
+	}
+}
+
 function drawMap(map, canvas, squareSize){
 	var ctx = canvas.getContext('2d');
 	for (var i = 0; i < map.length; i++) {
@@ -89,15 +193,20 @@ function gameOfLife(matrix){
 
 var matrix = fillMatrix(setMatrix(canvas, squareSize), 0);
 var isPaused = false;
+var xOld = -1;
+var yOld = -1;
 canvas.addEventListener("mousemove", function(e){
 	if (e.which == 1) {
 		isPaused = true;
-		var i = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
-		var j = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
-		matrix[i][j] = 1;
+		var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
+		var y = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
+		matrix[x][y] = 1;
+		drawLine(xOld, yOld, x, y);
+		xOld = x;
+		yOld = y;
 		var ctx = canvas.getContext('2d');
 		ctx.fillStyle = "#00FF00";
-		ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
+		ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
   }
 }, false);
 
@@ -107,12 +216,14 @@ canvas.addEventListener("mouseup", function(e){
 
 canvas.addEventListener("mousedown", function(e){
 	isPaused = true;
-	var i = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
-	var j = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
-	matrix[i][j] = 1;
+	var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
+	var y = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
+	matrix[x][y] = 1;
 	var ctx = canvas.getContext('2d');
 	ctx.fillStyle = "#00FF00";
-	ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
+	ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
+	xOld = x;
+	yOld = y;
 });
 
 //var matrix = randomizeMatrix(setMatrix(canvas, squareSize));
