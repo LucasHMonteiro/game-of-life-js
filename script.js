@@ -1,7 +1,30 @@
 var squareSize = 5;
 var canvas = setCanvas(squareSize);
 var background_canvas = setBackground(canvas);
-
+var colorArray = [
+	'#f00',
+	'#fe8300',
+	'#ffbe00',
+	'#ff0',
+	'#9cff00',
+	'#00ff00',
+	'#0f1',
+	'#0f7',
+	'#00ffbd',
+	'#00ffff',
+	'#00bdff',
+	'#007dfc',
+	'#003cfe',
+	'#0000ff',
+	'#4a00ff',
+	'#9500ff',
+	'#de00ff',
+	'#ff00ff',
+	'#ff00c6',
+	'#ff0084',
+	'#ff0040',
+];
+var currentColor = 0;
 function setCanvas(squareSize){
 	w = window.innerWidth-10;
 	h = window.innerHeight-10;
@@ -44,9 +67,15 @@ function fillMatrix(matrix, value){
 	return matrix;
 }
 
+function rotateColor(){
+	var color = colorArray[currentColor%colorArray.length];
+	currentColor++;
+	return color;
+}
+
 function putPixel(x, y){
 	var ctx = canvas.getContext('2d');
-	ctx.fillStyle = "#00FF00";
+	ctx.fillStyle = rotateColor();
 	ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
 }
 
@@ -111,7 +140,7 @@ function drawMap(map, canvas, squareSize){
 				ctx.fillStyle="rgba(255, 255, 255, 0)";
 				ctx.clearRect(i*squareSize, j*squareSize, squareSize, squareSize);
 			}else{
-				ctx.fillStyle="#00FF00";
+				ctx.fillStyle=rotateColor();
 				ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
 			}
 		}
@@ -173,7 +202,7 @@ canvas.addEventListener("mousemove", function(e){
 		xOld = x;
 		yOld = y;
 		var ctx = canvas.getContext('2d');
-		ctx.fillStyle = "#00FF00";
+		ctx.fillStyle = rotateColor();
 		ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
   }
 }, false);
@@ -188,7 +217,7 @@ canvas.addEventListener("mousedown", function(e){
 	var y = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
 	matrix[x][y] = 1;
 	var ctx = canvas.getContext('2d');
-	ctx.fillStyle = "#00FF00";
+	ctx.fillStyle = rotateColor();
 	ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
 	xOld = x;
 	yOld = y;
