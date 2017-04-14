@@ -1,5 +1,6 @@
 var squareSize = 5;
 var canvas = setCanvas(squareSize);
+var background_canvas = setBackground(canvas);
 
 function setCanvas(squareSize){
 	w = window.innerWidth-10;
@@ -8,6 +9,13 @@ function setCanvas(squareSize){
 	canvas.width = w - w%squareSize;
 	canvas.height = h - h%squareSize;
 	return canvas
+}
+
+function setBackground(canvas){
+	var background_canvas = document.getElementById('canvas_background');
+	background_canvas.width = canvas.width;
+	background_canvas.height = canvas.height;
+	return background_canvas;
 }
 
 function setMatrix(canvas, squareSize){
@@ -35,52 +43,6 @@ function fillMatrix(matrix, value){
 	}
 	return matrix;
 }
-
-function octant(x,y){
-	if(y > x){
-		if(x >= 0 && y >= 0){
-			return 1;
-		}else if(x <= 0 && y >= 0){
-			return 2;
-		}else if(x <= 0 && y <= 0){
-			return 5;
-		}else if(x >= 0 && y <= 0){
-			return 6;
-		}
-	}else{
-		if(x >= 0 && y >= 0){
-			return 0;
-		}else if(x <= 0 && y >= 0){
-			return 3;
-		}else if(x >= 0 && y <= 0){
-			return 4;
-		}else if(x <= 0 && y <= 0){
-			return 7;
-		}
-	}
-}
-
-
-
-// function drawLine(x0, y0, x1, y1){
-
-
-
-// 	var dx = x1 - x0;
-// 	var dy = y1 - y0;
-// 	var d = 2*dy - dx;
-// 	var y = y0;
-// 	for(x = x0; x <= x1; x++){
-// 		var ctx = canvas.getContext('2d');
-// 		ctx.fillStyle = "#00FF00";
-// 		ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
-// 		if (d > 0) {
-// 			y++;
-// 			d = d - 2*dx;
-// 		}
-// 		d += 2*dy;
-// 	}
-// }
 
 function putPixel(x, y){
 	var ctx = canvas.getContext('2d');
@@ -146,8 +108,8 @@ function drawMap(map, canvas, squareSize){
 		var row = map[i];
 		for (var j = 0; j < map[i].length; j++) {
 			if(map[i][j] === 0){
-				ctx.fillStyle="#000000";
-				ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
+				ctx.fillStyle="rgba(255, 255, 255, 0)";
+				ctx.clearRect(i*squareSize, j*squareSize, squareSize, squareSize);
 			}else{
 				ctx.fillStyle="#00FF00";
 				ctx.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
@@ -190,6 +152,12 @@ function gameOfLife(matrix){
 	}
 	return next_gen;
 }
+//Draw background text
+var bgctx = background_canvas.getContext("2d");
+bgctx.font = "30px Roboto, sans-serif";
+bgctx.textAlign = "center";
+bgctx.fillStyle="rgba(255, 255, 255, 0.2)";
+bgctx.fillText("Draw With Mouse",background_canvas.width/2, background_canvas.height/2);
 
 var matrix = fillMatrix(setMatrix(canvas, squareSize), 0);
 var isPaused = false;
