@@ -157,7 +157,7 @@ var bgctx = background_canvas.getContext("2d");
 bgctx.font = "30px Roboto, sans-serif";
 bgctx.textAlign = "center";
 bgctx.fillStyle="rgba(255, 255, 255, 0.2)";
-bgctx.fillText("Draw With Mouse",background_canvas.width/2, background_canvas.height/2);
+bgctx.fillText("Draw With Your Mouse",background_canvas.width/2, background_canvas.height/2);
 
 var matrix = fillMatrix(setMatrix(canvas, squareSize), 0);
 var isPaused = false;
