@@ -196,7 +196,8 @@ var isPaused = false;
 var canPaint = false;
 var xOld = -1;
 var yOld = -1;
-canvas.addEventListener("mousemove", function(e){
+
+function freeDraw(e){
 	if (canPaint) {
 		isPaused = true;
 		var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
@@ -209,14 +210,21 @@ canvas.addEventListener("mousemove", function(e){
 		ctx.fillStyle = rotateColor();
 		ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
   }
-}, false);
+}
+canvas.addEventListener("mousemove", freeDraw, false);
+canvas.addEventListener("touchmove", freeDraw, false);
 
 canvas.addEventListener("mouseup", function(e){
 	isPaused = false;
 	canPaint = false;
 });
 
-canvas.addEventListener("mousedown", function(e){
+canvas.addEventListener("touchup", function(e){
+	isPaused = false;
+	canPaint = false;
+});
+
+function clickDown(e){
 	isPaused = true;
 	canPaint = true;
 	var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
@@ -227,7 +235,10 @@ canvas.addEventListener("mousedown", function(e){
 	ctx.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
 	xOld = x;
 	yOld = y;
-});
+}
+
+canvas.addEventListener("mousedown", clickDown);
+canvas.addEventListener("touchdown", clickDown);
 
 //var matrix = randomizeMatrix(setMatrix(canvas, squareSize));
 var interval = setInterval(function(){
