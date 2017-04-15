@@ -1,3 +1,4 @@
+
 var squareSize = 5;
 var canvas = setCanvas(squareSize);
 var background_canvas = setBackground(canvas);
@@ -154,7 +155,9 @@ function countAliveNeighbors(matrix, i, j){
 	for(l = i-1; l <= i+1; l++){
 		for(k = j-1; k <= j+1; k++){
 			if(k >= 0 && k < columns && l >= 0 && l < lines){
-				if(matrix[l][k]) count++;
+				if(matrix[l][k] && (l != i || k != j)){
+					count++;
+				}
 			}
 		}
 	}
@@ -163,18 +166,18 @@ function countAliveNeighbors(matrix, i, j){
 
 function gameOfLife(matrix){
 	var next_gen = setMatrix(canvas, squareSize);
-	next_gen = fillMatrix(next_gen, 1);
+	next_gen = fillMatrix(next_gen, 0);
 
 	for(i = 0; i < matrix.length; i++){
 		for(j = 0; j < matrix[i].length; j++){
 			var aliveNeighbors = countAliveNeighbors(matrix, i, j);
 			if(matrix[i][j]){
-				if (aliveNeighbors < 2 || aliveNeighbors > 3) {
-					next_gen[i][j] = 0;
+				if (aliveNeighbors >= 2 && aliveNeighbors <= 3) {
+					next_gen[i][j] = 1;
 				}
 			}else{
-				if(aliveNeighbors != 3){
-					next_gen[i][j] = 0;
+				if(aliveNeighbors == 3){
+					next_gen[i][j] = 1;
 				}
 			}
 		}
@@ -190,10 +193,11 @@ bgctx.fillText("Draw With Your Mouse",background_canvas.width/2, background_canv
 
 var matrix = fillMatrix(setMatrix(canvas, squareSize), 0);
 var isPaused = false;
+var canPaint = false;
 var xOld = -1;
 var yOld = -1;
 canvas.addEventListener("mousemove", function(e){
-	if (e.which == 1) {
+	if (canPaint) {
 		isPaused = true;
 		var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
 		var y = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
@@ -209,10 +213,12 @@ canvas.addEventListener("mousemove", function(e){
 
 canvas.addEventListener("mouseup", function(e){
 	isPaused = false;
+	canPaint = false;
 });
 
 canvas.addEventListener("mousedown", function(e){
 	isPaused = true;
+	canPaint = true;
 	var x = Math.floor((e.pageX/canvas.width)*matrix.length) - 1;
 	var y = Math.floor((e.pageY/canvas.height)*matrix[0].length) - 2;
 	matrix[x][y] = 1;
@@ -232,3 +238,4 @@ var interval = setInterval(function(){
 }, 150);
 
 
+window.getSelection().removeAllRanges();
