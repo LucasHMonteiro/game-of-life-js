@@ -219,7 +219,7 @@ canvas.addEventListener("mouseup", function(e){
 	canPaint = false;
 });
 
-canvas.addEventListener("touchup", function(e){
+canvas.addEventListener("touchend", function(e){
 	isPaused = false;
 	canPaint = false;
 });
@@ -238,7 +238,7 @@ function clickDown(e){
 }
 
 canvas.addEventListener("mousedown", clickDown);
-canvas.addEventListener("touchdown", clickDown);
+canvas.addEventListener("touchstart", clickDown);
 
 //var matrix = randomizeMatrix(setMatrix(canvas, squareSize));
 var interval = setInterval(function(){
