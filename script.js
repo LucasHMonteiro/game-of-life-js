@@ -236,6 +236,3 @@ var interval = setInterval(function(){
 		matrix = gameOfLife(matrix);
 	}
 }, 150);
-
-
-//window.getSelection().removeAllRanges();
