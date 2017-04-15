@@ -238,4 +238,4 @@ var interval = setInterval(function(){
 }, 150);
 
 
-window.getSelection().removeAllRanges();
+//window.getSelection().removeAllRanges();
